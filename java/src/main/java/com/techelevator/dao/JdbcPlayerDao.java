@@ -15,6 +15,7 @@ public class JdbcPlayerDao implements PlayerDao {
 
     private final JdbcTemplate jdbcTemplate;
 
+
     public JdbcPlayerDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -39,6 +40,5 @@ public class JdbcPlayerDao implements PlayerDao {
         throw new DaoException("Invalid operation - Data integrity error");
     }
     }
-
 
 }

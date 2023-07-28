@@ -22,7 +22,8 @@ public class PlayerService {
     @Autowired
     private final PlayerDao playerDao;
 
-    private String apiURL = "https://www.balldontlie.io/api/v1/stats?per_page=100&start_date=2022-10-21&end_date=2023-04-09&page=5";
+    private String apiURL = "${player.api.url}";
+    private String statsApiURL = "https://www.balldontlie.io/api/v1/stats?seasons[]=2022&per_page=100&player_ids[]=";
 
     public PlayerService(PlayerDao playerDao) {
         this.playerDao = playerDao;
@@ -63,6 +64,38 @@ public class PlayerService {
         playerMap.forEach((k,v) -> playerDao.addPlayerToTable(v.getId(), v.getFirstName(), v.getLastName()));
 
         return playerMap;
+    }
+
+    public Map<String, Integer> getPlayerPoints(int id) {
+        Map<String, Integer> pointsMap = new HashMap<>();
+
+        HttpEntity<String> httpEntity = new HttpEntity<>("");
+        RestTemplate restTemplate = new RestTemplate();
+
+        ResponseEntity<String> response = restTemplate.exchange(statsApiURL + id,
+                HttpMethod.GET, httpEntity, String.class);
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode;
+
+        try {
+            jsonNode = objectMapper.readTree(response.getBody());
+            JsonNode root = jsonNode.path("data");
+            JsonNode metaData = jsonNode.path("meta");
+            for (int i = root.size() - 1; i >= root.size() - 10; i--) {
+                String date = root.path(i).path("game").path("date").asText();
+                int points = root.path(i).path("pts").asInt();
+                pointsMap.put(date, points);
+            }
+
+        } catch(JsonProcessingException e){
+            e.printStackTrace();
+        }
+        Iterator<Map.Entry<String, Integer>> itr = pointsMap.entrySet().iterator();
+        while (itr.hasNext()) {
+            Map.Entry<String, Integer> entry = itr.next();
+            System.out.println("Date:" + entry.getKey() +", Pts: " + entry.getValue());
+        }
+        return pointsMap;
     }
 
 }
