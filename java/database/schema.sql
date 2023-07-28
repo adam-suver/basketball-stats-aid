@@ -1,6 +1,7 @@
 BEGIN TRANSACTION;
 
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS player;
 
 CREATE TABLE users (
 	user_id SERIAL,
@@ -11,10 +12,10 @@ CREATE TABLE users (
 );
 
 CREATE TABLE player (
-    id UNIQUE,
+    player_id integer UNIQUE,
     first_name varchar(25) NOT NULL,
     last_name varchar(30) NOT NULL,
-    CONSTRAINT PK_player PRIMARY KEY (id)
+    CONSTRAINT PK_player PRIMARY KEY (player_id)
 );
 
 COMMIT TRANSACTION;
