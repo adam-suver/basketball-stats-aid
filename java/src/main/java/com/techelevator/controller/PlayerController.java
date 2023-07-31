@@ -5,6 +5,7 @@ import com.techelevator.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +22,7 @@ public class PlayerController {
     }
 
     @GetMapping(value = "/points/{id}")
-    public Map<String, Integer> getPlayerPoints(@PathVariable int id) {
+    public Map<LocalDate, Integer> getPlayerPoints(@PathVariable int id) {
         return playerService.getPlayerPoints(id);
     }
 }

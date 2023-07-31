@@ -2,10 +2,14 @@ package com.techelevator.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.time.LocalDate;
+
 public class Game {
 
     @JsonProperty("id")
     private long gameId;
+    @JsonProperty("date")
+    private LocalDate date;
     @JsonProperty("ast")
     private int assists;
     @JsonProperty("blk")

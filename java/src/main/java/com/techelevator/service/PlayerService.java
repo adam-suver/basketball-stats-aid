@@ -6,12 +6,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.techelevator.dao.PlayerDao;
 import com.techelevator.model.Player;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.client.RestTemplate;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 import java.util.*;
 
@@ -22,8 +26,15 @@ public class PlayerService {
     @Autowired
     private final PlayerDao playerDao;
 
-    private String apiURL = "${player.api.url}";
-    private String statsApiURL = "https://www.balldontlie.io/api/v1/stats?seasons[]=2022&per_page=100&player_ids[]=";
+    private HttpEntity<String> httpEntity = new HttpEntity<>("");
+    private RestTemplate restTemplate = new RestTemplate();
+    private ObjectMapper objectMapper = new ObjectMapper();
+    private JsonNode jsonNode;
+
+    @Value("${player.api.url}")
+    private String apiURL;
+    @Value("${stat.api.url}")
+    private String statsApiURL;
 
     public PlayerService(PlayerDao playerDao) {
         this.playerDao = playerDao;
@@ -32,20 +43,13 @@ public class PlayerService {
     public Map<Integer, Player> getAllPlayers() {
         Map<Integer, Player> playerMap = new HashMap<>();
 
-
-        HttpEntity<String> httpEntity = new HttpEntity<>("");
-        RestTemplate restTemplate = new RestTemplate();
-
         ResponseEntity<String> response = restTemplate.exchange(apiURL,
                 HttpMethod.GET, httpEntity, String.class);
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode jsonNode;
 
         try {
             jsonNode = objectMapper.readTree(response.getBody());
             JsonNode root = jsonNode.path("data");
             JsonNode metaData = jsonNode.path("meta");
-
 
                 for (int i = 0; i < root.size(); i++) {
                     Player player = null;
@@ -66,36 +70,30 @@ public class PlayerService {
         return playerMap;
     }
 
-    public Map<String, Integer> getPlayerPoints(int id) {
-        Map<String, Integer> pointsMap = new HashMap<>();
-
-        HttpEntity<String> httpEntity = new HttpEntity<>("");
-        RestTemplate restTemplate = new RestTemplate();
+    public Map<LocalDate, Integer> getPlayerPoints(int id) {
+        Map<LocalDate, Integer> pointsMap = new LinkedHashMap<>();
 
         ResponseEntity<String> response = restTemplate.exchange(statsApiURL + id,
                 HttpMethod.GET, httpEntity, String.class);
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode jsonNode;
 
         try {
             jsonNode = objectMapper.readTree(response.getBody());
             JsonNode root = jsonNode.path("data");
             JsonNode metaData = jsonNode.path("meta");
             for (int i = root.size() - 1; i >= root.size() - 10; i--) {
-                String date = root.path(i).path("game").path("date").asText();
+                Instant instant = Instant.parse(root.path(i).path("game").path("date").asText());
+                LocalDate date = instant.atZone(ZoneId.of("UTC")).toLocalDate();
                 int points = root.path(i).path("pts").asInt();
                 pointsMap.put(date, points);
             }
-
         } catch(JsonProcessingException e){
             e.printStackTrace();
         }
-        Iterator<Map.Entry<String, Integer>> itr = pointsMap.entrySet().iterator();
+        Iterator<Map.Entry<LocalDate, Integer>> itr = pointsMap.entrySet().iterator();
         while (itr.hasNext()) {
-            Map.Entry<String, Integer> entry = itr.next();
-            System.out.println("Date:" + entry.getKey() +", Pts: " + entry.getValue());
+            Map.Entry<LocalDate, Integer> entry = itr.next();
+            System.out.println("Date: " + entry.getKey() +", Pts: " + entry.getValue());
         }
         return pointsMap;
     }
-
 }

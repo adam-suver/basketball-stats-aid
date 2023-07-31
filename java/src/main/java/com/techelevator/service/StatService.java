@@ -41,4 +41,11 @@ public class StatService {
         }
         return null;
     }
+
+    private Game mapResultsToGame(JsonNode results) {
+        Game game = new Game();
+
+
+        return game;
+    }
 }
