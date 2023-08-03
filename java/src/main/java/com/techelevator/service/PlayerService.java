@@ -4,12 +4,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.techelevator.dao.PlayerDao;
+import com.techelevator.exception.DaoException;
 import com.techelevator.model.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.BadSqlGrammarException;
+import org.springframework.jdbc.CannotGetJdbcConnectionException;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.client.RestTemplate;
@@ -70,30 +75,6 @@ public class PlayerService {
         return playerMap;
     }
 
-    public Map<LocalDate, Integer> getPlayerPoints(int id) {
-        Map<LocalDate, Integer> pointsMap = new LinkedHashMap<>();
 
-        ResponseEntity<String> response = restTemplate.exchange(statsApiURL + id,
-                HttpMethod.GET, httpEntity, String.class);
 
-        try {
-            jsonNode = objectMapper.readTree(response.getBody());
-            JsonNode root = jsonNode.path("data");
-            JsonNode metaData = jsonNode.path("meta");
-            for (int i = root.size() - 1; i >= root.size() - 10; i--) {
-                Instant instant = Instant.parse(root.path(i).path("game").path("date").asText());
-                LocalDate date = instant.atZone(ZoneId.of("UTC")).toLocalDate();
-                int points = root.path(i).path("pts").asInt();
-                pointsMap.put(date, points);
-            }
-        } catch(JsonProcessingException e){
-            e.printStackTrace();
-        }
-        Iterator<Map.Entry<LocalDate, Integer>> itr = pointsMap.entrySet().iterator();
-        while (itr.hasNext()) {
-            Map.Entry<LocalDate, Integer> entry = itr.next();
-            System.out.println("Date: " + entry.getKey() +", Pts: " + entry.getValue());
-        }
-        return pointsMap;
-    }
 }

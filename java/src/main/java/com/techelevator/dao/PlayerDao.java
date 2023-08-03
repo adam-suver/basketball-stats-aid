@@ -10,4 +10,6 @@ public interface PlayerDao {
 
     void addPlayerToTable(int playerId, String firstName, String lastName);
 
+    public List<Player> getPlayersFromDatabase();
+
 }

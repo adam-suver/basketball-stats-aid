@@ -1,5 +1,6 @@
 package com.techelevator.controller;
 
+import com.techelevator.dao.PlayerDao;
 import com.techelevator.model.Player;
 import com.techelevator.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +17,16 @@ public class PlayerController {
     @Autowired
     private PlayerService playerService;
 
+    @Autowired
+    private PlayerDao playerDao;
+
     @GetMapping(value = "/all-players")
     public Map<Integer, Player> getAllPlayers() {
         return playerService.getAllPlayers();
     }
-
-    @GetMapping(value = "/points/{id}")
-    public Map<LocalDate, Integer> getPlayerPoints(@PathVariable int id) {
-        return playerService.getPlayerPoints(id);
+    @GetMapping(value = "/player-list")
+    public List<Player> getPlayerList() {
+        return playerDao.getPlayersFromDatabase();
     }
+
 }

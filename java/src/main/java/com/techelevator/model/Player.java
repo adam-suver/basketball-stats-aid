@@ -17,6 +17,9 @@ public class Player {
         this.lastName = lastName;
     }
 
+    public Player() {
+    }
+
     public int getId() {
         return Id;
     }
