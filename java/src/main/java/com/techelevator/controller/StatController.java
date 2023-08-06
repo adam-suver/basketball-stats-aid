@@ -4,6 +4,7 @@ package com.techelevator.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.techelevator.model.Game;
 import com.techelevator.service.StatService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import java.util.Map;
 @CrossOrigin
 public class StatController {
 
+    @Autowired
     private StatService statService;
 
 //    @GetMapping(value = "/{id}/{category}")

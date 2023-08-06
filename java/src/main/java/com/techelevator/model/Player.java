@@ -4,15 +4,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Player {
 
-    @JsonProperty("id")
-    private int Id;
+    @JsonProperty("player_id")
+    private int playerId;
     @JsonProperty("first_name")
     private String firstName;
     @JsonProperty("last_name")
     private String lastName;
 
     public Player(int id, String firstName, String lastName) {
-        Id = id;
+        this.playerId = id;
         this.firstName = firstName;
         this.lastName = lastName;
     }
@@ -20,12 +20,12 @@ public class Player {
     public Player() {
     }
 
-    public int getId() {
-        return Id;
+    public int getPlayerId() {
+        return playerId;
     }
 
-    public void setId(int id) {
-        Id = id;
+    public void setPlayerId(int id) {
+        this.playerId = id;
     }
 
     public String getFirstName() {

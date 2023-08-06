@@ -66,7 +66,7 @@ public class JdbcPlayerDao implements PlayerDao {
 
     private Player mapRowToPlayer(SqlRowSet sqlRowSet) {
         Player player = new Player();
-        player.setId(sqlRowSet.getInt("player_id"));
+        player.setPlayerId(sqlRowSet.getInt("player_id"));
         player.setFirstName(sqlRowSet.getString("first_name"));
         player.setLastName(sqlRowSet.getString("last_name"));
         return player;

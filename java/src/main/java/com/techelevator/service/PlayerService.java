@@ -70,7 +70,7 @@ public class PlayerService {
             }
         System.out.println(playerMap.keySet());
 
-        playerMap.forEach((k,v) -> playerDao.addPlayerToTable(v.getId(), v.getFirstName(), v.getLastName()));
+        playerMap.forEach((k,v) -> playerDao.addPlayerToTable(v.getPlayerId(), v.getFirstName(), v.getLastName()));
 
         return playerMap;
     }

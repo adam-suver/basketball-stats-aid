@@ -2,26 +2,42 @@
   <div class="home">
     <h1>Basketball Betting Aid</h1>
     <p>You must be authenticated to see this</p>
-
-  <select name="Player" id="playerDropdown">
-    <option value="" disabled selected>Select A Player</option>
-    <option v-for="player in playerList" :key="player.player_id" :value="player">{{player.last_name}}, {{player.first_name}}</option>
+  <form @submit.prevent="retrieveStats">
+  <select name="Player" id="playerDropdown" v-model="selectedPlayerId">
+    <option v-for="player in playerList" :key="player.player_id" 
+    :value="player.player_id" required
+    >{{player.last_name}}, {{player.first_name}} - {{player.player_id}}</option>
   </select>
-    <select name="Category" id="category">
+  
+  <select name="Category" id="category" v-model="statRequest.category" required>
     <option value="" disabled selected>Select A Stat Category</option>
-    <option value="assists">Assists</option>
-    <option value="blocks">Blocks</option>
-    <option value="fieldGoals">Field Goals Made</option>
-    <option value="freeThrows">Free Throws Made</option>
-    <option value="points">Points</option>
-    <option value="rebounds">Rebounds</option>
-    <option value="steals">Steals</option>
-    <option value="threePointers">Three Pointers Made</option>
+    <option value="assists" :selected="statRequest.category === 'assists'">Assists</option>
+    <option value="blocks" :selected="statRequest.category === 'blocks'">Blocks</option>
+    <option value="fieldGoals" :selected="statRequest.category === 'fieldGoals'">Field Goals Made</option>
+    <option value="freeThrows" :selected="statRequest.category === 'freeThrows'">Free Throws Made</option>
+    <option value="points" :selected="statRequest.category === 'points'">Points</option>
+    <option value="rebounds" :selected="statRequest.category === 'rebounds'">Rebounds</option>
+    <option value="steals" :selected="statRequest.category === 'steals'">Steals</option>
+    <option value="threePointers" :selected="statRequest.category === 'threePointers'">Three Pointers Made</option>
   </select>
-    <select name="Line" id="line">
+  
+  <select name="Line" id="line" v-model="selectedLine">
     <option value="" disabled selected>Select A Line</option>
   </select>
-  <button>Submit</button>
+  
+  <button type="submit">Submit</button>
+  </form>
+  {{ this.requestedStats }}
+  <table v-if="requestedStats != null">
+    <tr>
+      <th>Date</th>
+      <th>Value</th>
+    </tr>
+    <tr v-for="(value, date) in requestedStats" :key="date">
+      <td>{{ date }}</td>
+      <td>{{ value }}</td>
+    </tr>
+  </table>
   </div>
 </template>
 
@@ -34,6 +50,13 @@ export default {
   data() {
     return {
       playerList: [],
+      selectedPlayerId: Number(0),
+      statRequest: {
+        playerId: this.selectedPlayerId,
+        category: "",
+      },
+      selectedLine: "",
+      requestedStats: null,
     };
   },
   methods: {
@@ -52,11 +75,25 @@ export default {
             last_name: player.last_name,
           }
         })
+        if (this.playerList.length > 0) {
+            this.selectedPlayerId = this.playerList[0].player_id;
+        }
       })
       .catch((error) => {
         console.log(error)
       })
     },
+    retrieveStats() {
+      if (this.statRequest.category === 'points') {
+        this.requestedStats = null;
+        console.log(this.selectedPlayerId);
+        StatService.getPlayerPoints(this.selectedPlayerId)
+        .then((response) => {
+          this.requestedStats = response.data;
+        })
+      }
+
+    }
   },
 
   created() {
