@@ -27,8 +27,9 @@
   
   <button type="submit">Submit</button>
   </form>
-  {{ this.requestedStats }}
-  <table v-if="requestedStats != null">
+  <table v-show="requestedStats != null && (statRequest.category === 'assists' || 
+  statRequest.category === 'blocks' || statRequest.category === 'points' || 
+  statRequest.category === 'rebounds' || statRequest.category === 'steals')">
     <tr>
       <th>Date</th>
       <th>Value</th>
@@ -36,6 +37,19 @@
     <tr v-for="(value, date) in requestedStats" :key="date">
       <td>{{ date }}</td>
       <td>{{ value }}</td>
+    </tr>
+  </table>
+  <table v-show="requestedStats != null && (statRequest.category === 'fieldGoals' 
+  || statRequest.category === 'freeThrows' || statRequest.category === 'threePointers')">
+    <tr>
+      <th>Date</th>
+      <th>Made</th>
+      <th>Attempts</th>
+    </tr>
+    <tr v-for="(data, date) in requestedStats" :key="date">
+      <td>{{date}}</td>
+      <td>{{data.shotsMade}}</td>
+      <td>{{data.attempts}}</td>
     </tr>
   </table>
   </div>
@@ -84,10 +98,44 @@ export default {
       })
     },
     retrieveStats() {
+      this.requestedStats = null;
       if (this.statRequest.category === 'points') {
-        this.requestedStats = null;
-        console.log(this.selectedPlayerId);
         StatService.getPlayerPoints(this.selectedPlayerId)
+        .then((response) => {
+          this.requestedStats = response.data;
+        })
+      } else if (this.statRequest.category === 'assists') {
+        StatService.getPlayerAssists(this.selectedPlayerId)
+        .then((response) => {
+          this.requestedStats = response.data;
+        })
+      } else if (this.statRequest.category === 'blocks') {
+        StatService.getPlayerBlocks(this.selectedPlayerId)
+        .then((response) => {
+          this.requestedStats = response.data;
+        })
+      } else if (this.statRequest.category === 'rebounds') {
+        StatService.getPlayerRebounds(this.selectedPlayerId)
+        .then((response) => {
+          this.requestedStats = response.data;
+        })
+      } else if (this.statRequest.category === 'steals') {
+        StatService.getPlayerSteals(this.selectedPlayerId)
+        .then((response) => {
+          this.requestedStats = response.data;
+        })
+      } else if (this.statRequest.category === 'fieldGoals') {
+        StatService.getPlayerFieldGoals(this.selectedPlayerId)
+        .then((response) => {
+          this.requestedStats = response.data;
+        })
+      } else if (this.statRequest.category === 'freeThrows') {
+        StatService.getPlayerFreeThrows(this.selectedPlayerId)
+        .then((response) => {
+          this.requestedStats = response.data;
+        })
+      } else if (this.statRequest.category === 'threePointers') {
+        StatService.getPlayerThrees(this.selectedPlayerId)
         .then((response) => {
           this.requestedStats = response.data;
         })
