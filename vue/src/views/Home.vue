@@ -6,19 +6,19 @@
   <select name="Player" id="playerDropdown" v-model="selectedPlayerId">
     <option v-for="player in playerList" :key="player.player_id" 
     :value="player.player_id" required
-    >{{player.last_name}}, {{player.first_name}} - {{player.player_id}}</option>
+    >{{player.last_name}}, {{player.first_name}}</option>
   </select>
   
-  <select name="Category" id="category" v-model="statRequest.category" required>
+  <select name="Category" id="category" v-model="statRequest.category" @change="clear" required>
     <option value="" disabled selected>Select A Stat Category</option>
     <option value="assists" :selected="statRequest.category === 'assists'">Assists</option>
     <option value="blocks" :selected="statRequest.category === 'blocks'">Blocks</option>
-    <option value="fieldGoals" :selected="statRequest.category === 'fieldGoals'">Field Goals Made</option>
-    <option value="freeThrows" :selected="statRequest.category === 'freeThrows'">Free Throws Made</option>
+    <option value="fieldGoals" :selected="statRequest.category === 'fieldGoals'">Field Goals</option>
+    <option value="freeThrows" :selected="statRequest.category === 'freeThrows'">Free Throws</option>
     <option value="points" :selected="statRequest.category === 'points'">Points</option>
     <option value="rebounds" :selected="statRequest.category === 'rebounds'">Rebounds</option>
     <option value="steals" :selected="statRequest.category === 'steals'">Steals</option>
-    <option value="threePointers" :selected="statRequest.category === 'threePointers'">Three Pointers Made</option>
+    <option value="threePointers" :selected="statRequest.category === 'threePointers'">Three Pointers</option>
   </select>
   
   <select name="Line" id="line" v-model="selectedLine">
@@ -31,25 +31,25 @@
   statRequest.category === 'blocks' || statRequest.category === 'points' || 
   statRequest.category === 'rebounds' || statRequest.category === 'steals')">
     <tr>
-      <th>Date</th>
-      <th>Value</th>
+      <th class="date-column">Date</th>
+      <th class="value-column">Value</th>
     </tr>
-    <tr v-for="(value, date) in requestedStats" :key="date">
-      <td>{{ date }}</td>
-      <td>{{ value }}</td>
+    <tr v-for="(value, date) in requestedStats" :key="date" :class="rowClass(value, selectedLine)">
+      <td class="date-column">{{ date }}</td>
+      <td class="value-column">{{ value }}</td>
     </tr>
   </table>
   <table v-show="requestedStats != null && (statRequest.category === 'fieldGoals' 
   || statRequest.category === 'freeThrows' || statRequest.category === 'threePointers')">
     <tr>
-      <th>Date</th>
-      <th>Made</th>
-      <th>Attempts</th>
+      <th class="date-column">Date</th>
+      <th class="made-column">Made</th>
+      <th class="attempts-column">Attempts</th>
     </tr>
-    <tr v-for="(data, date) in requestedStats" :key="date">
-      <td>{{date}}</td>
-      <td>{{data.shotsMade}}</td>
-      <td>{{data.attempts}}</td>
+    <tr v-for="(data, date) in requestedStats" :key="date" :class="rowClass(data.shotsMade, selectedLine)">
+      <td class="date-column">{{date}}</td>
+      <td class="made-column">{{data.shotsMade}}</td>
+      <td class="attempts-column">{{data.attempts}}</td>
     </tr>
   </table>
   </div>
@@ -73,6 +73,20 @@ export default {
       requestedStats: null,
     };
   },
+
+    computed: {
+    rowClass() {
+      return (value, selectedLine) => {
+        if (value > selectedLine) {
+          return 'higher-than-line';
+        } else if (value < selectedLine) {
+          return 'lower-than-line';
+        } else {
+          return '';
+        }
+      };
+    },
+    },
   methods: {
 
     getPlayerPoints(id) {
@@ -96,6 +110,10 @@ export default {
       .catch((error) => {
         console.log(error)
       })
+    },
+
+    clear() {
+      this.requestedStats = null;
     },
     retrieveStats() {
       this.requestedStats = null;
@@ -138,10 +156,10 @@ export default {
         StatService.getPlayerThrees(this.selectedPlayerId)
         .then((response) => {
           this.requestedStats = response.data;
-        })
+        });
       }
 
-    }
+    },
   },
 
   created() {
@@ -160,6 +178,92 @@ export default {
     }
 
     generateOptions(0.5, 50.5, 1);
-  }
+  },
+
 };
 </script>
+<style scoped>
+select {
+  margin: 10px;
+  font-family: Calibri, Geneva, Tahoma, sans-serif;
+  background-color: lightgrey;
+  font-size: 15px;
+}
+.home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  font-family: Calibri, Geneva, Tahoma, sans-serif;
+  background-color: black;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: #d6ad60;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+button:hover {
+  background-color: #ffcd58;
+}
+
+button {
+  background-color: #ff9636;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin: 10px;
+  font-family: Calibri, Geneva, Tahoma, sans-serif;
+  font-size: 15px;
+}
+
+th {
+  font-weight: bold;
+}
+
+table {
+  display: table;
+  width: 1fr;
+  color: white;
+}
+
+.date-column {
+  text-align: center;
+}
+
+.value-column {
+  text-align: center;
+}
+
+.made-column {
+  text-align: center;
+}
+
+.attempts-column {
+  text-align: center;
+}
+
+.higher-than-line {
+  background-color: #81c784;
+}
+
+.lower-than-line {
+  background-color: #e57373;
+}
+
+</style>
