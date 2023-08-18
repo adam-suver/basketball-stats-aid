@@ -1,7 +1,8 @@
 <template>
   <div class="home">
-    <h1>Basketball Betting Aid</h1>
-    <p>You must be authenticated to see this</p>
+    <h1>NBA Wager Wizard: Simplified Stat Research</h1>
+    <p>This tool retrieves stats from a player's last ten games. It does not exclude games missed.</p>
+    <p>Please gamble responsibly.</p>
   <form @submit.prevent="retrieveStats">
   <select name="Player" id="playerDropdown" v-model="selectedPlayerId">
     <option v-for="player in playerList" :key="player.player_id" 
@@ -32,7 +33,7 @@
   statRequest.category === 'rebounds' || statRequest.category === 'steals')">
     <tr>
       <th class="date-column">Date</th>
-      <th class="value-column">Value</th>
+      <th class="value-column">Number</th>
     </tr>
     <tr v-for="(value, date) in requestedStats" :key="date" :class="rowClass(value, selectedLine)">
       <td class="date-column">{{ date }}</td>
@@ -44,7 +45,7 @@
     <tr>
       <th class="date-column">Date</th>
       <th class="made-column">Made</th>
-      <th class="attempts-column">Attempts</th>
+      <th class="attempts-column">Attempted</th>
     </tr>
     <tr v-for="(data, date) in requestedStats" :key="date" :class="rowClass(data.shotsMade, selectedLine)">
       <td class="date-column">{{date}}</td>
@@ -64,13 +65,14 @@ export default {
   data() {
     return {
       playerList: [],
-      selectedPlayerId: Number(0),
+      selectedPlayerId: 0,
       statRequest: {
         playerId: this.selectedPlayerId,
         category: "",
       },
       selectedLine: "",
       requestedStats: null,
+      numberHigherThanLine: 0,
     };
   },
 
@@ -86,12 +88,8 @@ export default {
         }
       };
     },
-    },
+  },
   methods: {
-
-    getPlayerPoints(id) {
-      return StatService.getPlayerPoints(id);
-    },
 
     getPlayerListFromDatabase() {
       PlayerService.getPlayersFromDatabase()
@@ -188,6 +186,10 @@ select {
   font-family: Calibri, Geneva, Tahoma, sans-serif;
   background-color: lightgrey;
   font-size: 15px;
+  border-radius: 4px;
+  padding: 5px;
+  box-sizing: border-box;
+  width: auto;
 }
 .home {
   display: flex;
@@ -205,12 +207,16 @@ select {
 h1 {
   font-size: 24px;
   margin-bottom: 10px;
-  color: #d6ad60;
+  color: #ff9636;
+  background: linear-gradient(orange, #e74c3c);
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 2px;
+  background-clip: text;
 }
 
 form {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   margin-bottom: 20px;
 }
@@ -262,8 +268,23 @@ table {
   background-color: #81c784;
 }
 
+.higher-than-line:hover {
+  background-color: green;
+}
+
 .lower-than-line {
   background-color: #e57373;
 }
 
+.lower-than-line:hover {
+  background-color: red;
+}
+
+p {
+  color: white;
+}
+
+select:focus, select:hover {
+  border: 2px solid orange;
+}
 </style>
