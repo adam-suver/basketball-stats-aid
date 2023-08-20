@@ -1,10 +1,11 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '../views/Home.vue'
+/*
 import Login from '../views/Login.vue'
 import Logout from '../views/Logout.vue'
 import Register from '../views/Register.vue'
-import store from '../store/index'
+import store from '../store/index' */
 
 Vue.use(Router)
 
@@ -26,10 +27,10 @@ const router = new Router({
       name: 'home',
       component: Home,
       meta: {
-        requiresAuth: true
+        requiresAuth: false
       }
-    },
-    {
+    }
+/*    {
       path: "/login",
       name: "login",
       component: Login,
@@ -52,10 +53,10 @@ const router = new Router({
       meta: {
         requiresAuth: false
       }
-    }
+    } */
   ]
 })
-
+/*
 router.beforeEach((to, from, next) => {
   // Determine if the route requires Authentication
   const requiresAuth = to.matched.some(x => x.meta.requiresAuth);
@@ -68,5 +69,5 @@ router.beforeEach((to, from, next) => {
     next();
   }
 });
-
+*/
 export default router;

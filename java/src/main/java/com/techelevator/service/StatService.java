@@ -94,6 +94,7 @@ public class StatService {
             Map.Entry<LocalDate, Integer> entry = itr.next();
             System.out.println("Date: " + entry.getKey() + ", Number: " + entry.getValue());
         }
+        System.out.println("--------------------------");
         return statsMap;
     }
 
