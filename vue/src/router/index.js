@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '../views/Home.vue'
+import About from '../views/About.vue'
 /*
 import Login from '../views/Login.vue'
 import Logout from '../views/Logout.vue'
@@ -29,7 +30,15 @@ const router = new Router({
       meta: {
         requiresAuth: false
       }
-    }
+    },
+    {
+      path: '/about',
+      name: 'about',
+      component: About,
+      meta: {
+        requiresAuth: false
+      }
+    },
 /*    {
       path: "/login",
       name: "login",
