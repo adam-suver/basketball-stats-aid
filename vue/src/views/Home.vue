@@ -287,4 +287,9 @@ p {
 select:focus, select:hover {
   border: 2px solid orange;
 }
+
+td {
+  padding: 5px;
+  border: 2px solid white;
+}
 </style>

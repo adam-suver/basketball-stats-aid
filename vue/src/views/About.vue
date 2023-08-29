@@ -18,7 +18,12 @@
         I live in Columbus, Ohio, and I am currently open to software developer opportunities.</p>
       <p>When I am not coding, I enjoy playing board games and tabletop roleplaying games like Dungeons & Dragons,
          venturing out to craft breweries, and playing pickleball with my friends.</p>
-      <p>Feel free to contact me about this project or developer positions at asuver4@gmail.com</p>
+      <p>Feel free to contact me about this project or developer positions at asuver4@gmail.com</p> <br>
+      <div id="links">
+      <a href="https://github.com/adam-suver" target="_blank"><img src="../images/github.png" alt="GitHub logo" id="github-link"/></a> 
+      <a href="https://www.linkedin.com/in/adam-suver/" target="_blank"><img src="../images/linkedin.png" alt="LinkedIn logo" id="linkedin-logo"/></a>
+      </div>
+      <img src="../images/headshot.jpg" alt="Adam Suver Headshot" id="headshot"/>
     </div>
   </div>
 </template>
@@ -33,22 +38,54 @@ export default {
 <style scoped>
 #about {
   display: flex;
-  background-color: black;
+  background-image: url('../images/court.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  align-items: center;
+  justify-content: center;
+  font-family: Calibri, Geneva, Tahoma, sans-serif;
 }
 p {
   color: white;
+  font-weight: bold;
 }
 
 h2 {
   color: white;
+  margin: auto;
 }
 
 #about-proj {
-  margin: 75px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 60px;
 }
 
 #about-dev {
-  margin: 75px;
+  display: flex;
+  flex-direction: column;
+  margin: 60px;
+  justify-content: center;
+  align-items: center;
+}
+
+#headshot {
+  border-radius: 50%;
+  height: 325px;
+}
+
+#links {
+  display: flex;
+  align-items: center;
+  margin: 15px;
+}
+
+#github-link, #linkedin-logo {
+  width: 100px;
+  display: inline;
+  margin: 25px;
 }
 
 </style>
