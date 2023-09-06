@@ -28,6 +28,8 @@ target/
 build/
 
 /database
+create.sh
+*.sh
 
 ### VS Code ###
 .vscode/
