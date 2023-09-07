@@ -27,9 +27,6 @@ target/
 /.nb-gradle/
 build/
 
-/database
-create.sh
-*.sh
 
 ### VS Code ###
 .vscode/
