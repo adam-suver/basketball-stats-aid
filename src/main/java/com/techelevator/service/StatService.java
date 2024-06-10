@@ -59,6 +59,27 @@ public class StatService {
 
         headers.set("Authorization", apiKey);
         this.httpEntity = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(apiURL + id, HttpMethod.GET, this.httpEntity, String.class);
+
+        try {
+            jsonNode = objectMapper.readTree(response.getBody());
+            JsonNode root = jsonNode.path("data");
+            int limit = Math.min(root.size(), 10);
+
+            for (int i = root.size() - 1; i >= root.size() - limit; i--) {
+                mapNodeByCategory(root, i, category);
+            }
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return statsMap;
+    }
+
+        /*        statsMap.clear();
+
+        headers.set("Authorization", apiKey);
+        this.httpEntity = new HttpEntity<>(headers);
         ResponseEntity<String> response = restTemplate.exchange(apiURL + id,
                 HttpMethod.GET, this.httpEntity, String.class);
 
@@ -105,7 +126,34 @@ public class StatService {
         System.out.println("--------------------------");
         return statsMap;
     }
+*/
+    private void mapNodeByCategory(JsonNode root, int index, String category) {
+        JsonNode gameNode = root.get(index);
+        LocalDate gameDate = LocalDate.parse(gameNode.path("game").path("date").asText());
+        int statValue = 0;
 
+        switch (category) {
+            case "points":
+                statValue = gameNode.path("pts").asInt();
+                break;
+            case "assists":
+                statValue = gameNode.path("ast").asInt();
+                break;
+            case "blocks":
+                statValue = gameNode.path("blk").asInt();
+                break;
+            case "rebounds":
+                statValue = gameNode.path("reb").asInt();
+                break;
+            case "steals":
+                statValue = gameNode.path("stl").asInt();
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown category: " + category);
+        }
+
+        statsMap.put(gameDate, statValue);
+    }
     private void mapNodePoints(JsonNode node, int i) {
         Instant instant = Instant.parse(node.path(i).path("game").path("date").asText());
         LocalDate date = instant.atZone(ZoneId.of("UTC")).toLocalDate();
