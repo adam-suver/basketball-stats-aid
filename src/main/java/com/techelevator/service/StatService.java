@@ -7,6 +7,7 @@ import com.techelevator.model.DualStatDto;
 import com.techelevator.model.Game;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -30,9 +31,13 @@ public class StatService {
     private Map<LocalDate, Integer> statsMap = new LinkedHashMap<>();
     private DualStatDto dualStatDto;
     private Map<LocalDate, DualStatDto> dualStatMap = new LinkedHashMap<>();
+    private HttpHeaders headers = new HttpHeaders();
 
     @Value("${stat.api.url}")
     private String apiURL;
+
+    @Value("${stat.api.key}")
+    private String apiKey;
 
     public List<Game> getSearchResults(int playerId, String category) {
         String url = this.apiURL + playerId;
@@ -51,8 +56,11 @@ public class StatService {
 
     public Map<LocalDate, Integer> getPlayerSingleStat(int id, String category) {
         statsMap.clear();
+
+        headers.set("Authorization", apiKey);
+        this.httpEntity = new HttpEntity<>(headers);
         ResponseEntity<String> response = restTemplate.exchange(apiURL + id,
-                HttpMethod.GET, httpEntity, String.class);
+                HttpMethod.GET, this.httpEntity, String.class);
 
         try {
             jsonNode = objectMapper.readTree(response.getBody());
