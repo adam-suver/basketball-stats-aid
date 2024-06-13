@@ -187,8 +187,11 @@ public class StatService {
 
     public Map<LocalDate, DualStatDto> getPlayerDualStat(int id, String category) {
         dualStatMap.clear();
+
+        headers.set("Authorization", apiKey);
+        this.httpEntity = new HttpEntity<>(headers);
         ResponseEntity<String> response = restTemplate.exchange(apiURL + id,
-                HttpMethod.GET, httpEntity, String.class);
+                HttpMethod.GET, this.httpEntity, String.class);
 
         try {
             jsonNode = objectMapper.readTree(response.getBody());
