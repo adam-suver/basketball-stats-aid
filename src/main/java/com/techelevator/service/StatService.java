@@ -190,8 +190,7 @@ public class StatService {
 
         headers.set("Authorization", apiKey);
         this.httpEntity = new HttpEntity<>(headers);
-        ResponseEntity<String> response = restTemplate.exchange(apiURL + id,
-                HttpMethod.GET, this.httpEntity, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(apiURL + id, HttpMethod.GET, this.httpEntity, String.class);
 
         try {
             jsonNode = objectMapper.readTree(response.getBody());
