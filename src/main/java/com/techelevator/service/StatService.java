@@ -227,8 +227,9 @@ public class StatService {
 
     private void mapNodeFieldGoals(JsonNode node, int i) {
         dualStatDto = null;
-        Instant instant = Instant.parse(node.path(i).path("game").path("date").asText());
-        LocalDate date = instant.atZone(ZoneId.of("UTC")).toLocalDate();
+        String dateString = node.path(i).path("game").path("date").asText();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date = LocalDate.parse(dateString, formatter);
         int fieldGoalsMade = node.path(i).path("fgm").asInt();
         int fieldGoalsAttempted = node.path(i).path("fga").asInt();
         dualStatDto = new DualStatDto(fieldGoalsMade, fieldGoalsAttempted);
@@ -248,8 +249,9 @@ public class StatService {
 
     private void mapNodeFreeThrows(JsonNode node, int i) {
         dualStatDto = null;
-        Instant instant = Instant.parse(node.path(i).path("game").path("date").asText());
-        LocalDate date = instant.atZone(ZoneId.of("UTC")).toLocalDate();
+        String dateString = node.path(i).path("game").path("date").asText();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date = LocalDate.parse(dateString, formatter);
         int freeThrowsMade = node.path(i).path("ftm").asInt();
         int freeThrowsAttempted = node.path(i).path("fta").asInt();
         dualStatDto = new DualStatDto(freeThrowsMade, freeThrowsAttempted);
