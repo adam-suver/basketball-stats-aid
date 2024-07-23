@@ -16,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -236,8 +237,9 @@ public class StatService {
 
     private void mapNodeThrees(JsonNode node, int i) {
         dualStatDto = null;
-        Instant instant = Instant.parse(node.path(i).path("game").path("date").asText());
-        LocalDate date = instant.atZone(ZoneId.of("UTC")).toLocalDate();
+        String dateString = node.path(i).path("game").path("date").asText();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date = LocalDate.parse(dateString, formatter);
         int threesMade = node.path(i).path("fg3m").asInt();
         int threesAttempted = node.path(i).path("fg3a").asInt();
         dualStatDto = new DualStatDto(threesMade, threesAttempted);
